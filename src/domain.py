@@ -302,15 +302,17 @@ class Domain():
         try:
             # TXTレコードを取得して spf の文字列を含むものを抽出
             for txt in dns.resolver.query(name, 'TXT'):
-                txts.append(txt.to_text().strip('"'))
-                if 'spf' in txt.to_text():
-                    spfs.append(txt.to_text().strip('"'))
+                txts.extend(re.findall(r'"([^"]+)"', txt.to_text()))
+            
+            for txt in txts:
+                if 'spf' in txt:
+                    spfs.append(txt)
             
         except Exception as e:
             if self.__is_debug:
                 print(f"Error: Failed to get record for {name} ({e})")
         
-        return sorted(txts), sorted(spfs)
+        return txts, spfs
     
 
     def __getHinfo(self, name:str) -> tuple[list[str], str, str, str, str]:
@@ -363,7 +365,7 @@ class Domain():
 
         try:
             # TXTレコードを取得して spf の文字列を含むものを抽出
-            dmarc = dns.resolver.query(f'_dmarc.{name}', 'TXT')[0].to_text().strip('"')
+            dmarc = dns.resolver.query(f'_dmarc.{name}', 'TXT')[0].to_text().replace('"', '')
             dmarc_p = re.search(r'p=([^;]+)', dmarc).group(1)
             dmarc_rua = re.search(r'rua=mailto:([^;]+)', dmarc).group(1)
             
