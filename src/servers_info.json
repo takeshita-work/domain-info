@@ -1,0 +1,138 @@
+{
+    "name_servers": {
+        "お名前.com": [
+            "01.dnsv.jp.",
+            "02.dnsv.jp.",
+            "03.dnsv.jp.",
+            "04.dnsv.jp."
+        ], 
+        "CPI(ns4, ns5)": [
+            "ns4.cpi.ad.jp.",
+            "ns5.cpi.ad.jp."
+        ],
+        "CPI(ns6, ns7)": [
+            "ns6.cpi.ad.jp.",
+            "ns7.cpi.ad.jp."
+        ],
+        "KDDI DNSホスティングサービス": [
+            "nsk0.secure.ne.jp.",
+            "nsk1.secure.ne.jp."
+        ],
+        "さくらインターネット": [
+            "ns1.dns.ne.jp.",
+            "ns2.dns.ne.jp."
+        ],
+        "ムームーDNS": [
+            "dns01.muumuu-domain.com.",
+            "dns02.muumuu-domain.com."
+        ],
+        "ロリポップ": [
+            "uns01.lolipop.jp.",
+            "uns02.lolipop.jp."
+        ],
+        "Xserver": [
+            "ns1.xserver.jp.",
+            "ns2.xserver.jp.",
+            "ns3.xserver.jp.",
+            "ns4.xserver.jp.",
+            "ns5.xserver.jp."
+        ],
+        "Xserverビジネス": [
+            "ns1.xbiz.ne.jp.",
+            "ns2.xbiz.ne.jp.",
+            "ns3.xbiz.ne.jp."
+        ],
+        "InfoSphere IP DNSアウトソーシング": [
+            "asns1.customer.ne.jp.",
+            "asns2.customer.ne.jp."
+        ],
+        "Route 53(AWS)": [
+            "awsdns"
+        ],
+        "Office 365": [
+            "ns1.bdm.microsoftonline.com.",
+            "ns2.bdm.microsoftonline.com.",
+            "ns3.bdm.microsoftonline.com.",
+            "ns4.bdm.microsoftonline.com."
+        ],
+        "キヤノンインターネットサービス": [
+            "ns1.canonet.ne.jp.",
+            "ns2.canonet.ne.jp."
+        ],
+        "お名前.com 共用サーバー": [
+            "dns01.gmoserver.jp.",
+            "dns02.gmoserver.jp."
+        ],
+        "Google": [
+            "ns1.google.com.",
+            "ns2.google.com.",
+            "ns3.google.com.",
+            "ns4.google.com."
+        ]
+    },
+    "web_servers": {
+        "さくらインターネット": [
+            "^.+\\.sakura\\.ne\\.jp\\.$"
+        ],
+        "Xserver": [
+            "^.+\\.xserver\\.jp\\.$"
+        ],
+        "Xserverビジネス": [
+            "^.+\\.xbiz\\.ne\\.jp\\.$"
+        ],
+        "ロリポップ": [
+            "^.+\\.lolipop\\.jp\\.$"
+        ],
+        "AWS": [
+            "^.+\\.amazonaws\\.com\\.$"
+        ],
+        "Google": [
+            "^.+\\.1e100\\.net\\.$"
+        ]
+    },
+    "mail_servers": {
+        "さくらインターネット": [
+            "^.+\\.sakura\\.ne\\.jp\\.$"
+        ],
+        "Xserver": [
+            "^.+\\.xserver\\.jp\\.$"
+        ],
+        "Xserverビジネス": [
+            "^.+\\.xbiz\\.ne\\.jp\\.$"
+        ],
+        "ロリポップ": [
+            "^.+\\.lolipop\\.jp\\.$"
+        ],
+        "CPI": [
+            "^.+\\.secure\\.ne\\.jp\\.$"
+        ],
+        "Outlook": [
+            "^.+\\.outlook\\.com\\.$"
+        ],
+        "キヤノンインターネットサービス": [
+            "^.+\\.canonet\\.ne\\.jp\\.$"
+        ],
+        "お名前.com 共用サーバー": [
+            "^.+\\.gmoserver\\.jp\\.$"
+        ]
+    },
+    "hinfo": {
+        "web_servers":{
+            "CPI(1世代)": [
+                "^aa[0-9]{3}\\.secure\\.ne\\.jp\\.$"
+            ],
+            "CPI(2世代)": [
+                "^a[d,e][0-9]{3}\\.secure\\.ne\\.jp\\.$"
+            ],
+            "CPI(3世代)": [
+                "^a[h,i][0-9]{3}\\.secure\\.ne\\.jp\\.$"
+            ]
+        },
+        "mail_servers": {
+            "CPI": [
+                "^a[a-z][0-9]{3}\\.secure\\.ne\\.jp\\.$",
+                "^m[0-9]{3}\\.secure\\.ne\\.jp\\.$"
+            ]
+        }
+    }
+}
