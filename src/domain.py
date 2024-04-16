@@ -81,8 +81,8 @@ class Domain():
                 self.www_a_server_name
             ) = self.__getA(name=self.wwwName)
             (
-                self.is_accessible_http,
-                self.is_accessible_https,
+                self.www_is_accessible_http,
+                self.www_is_accessible_https,
             ) = self.__isAccessibleHttp(name=self.wwwName)
 
             # MXレコード
@@ -187,7 +187,7 @@ class Domain():
             return ns, nsServerName
         except Exception as e:
             if self.__is_debug:
-                print(f"Error: Failed to get NS record for {name} ({e})")
+                print(f"NOTICE: Failed to get NS record for {name} ({e})")
             return [], ""
         
 
@@ -244,7 +244,7 @@ class Domain():
             
         except Exception as e:
             if self.__is_debug:
-                print(f"Error: Failed to get record for {name} ({e})")
+                print(f"NOTICE: Failed to get record for {name} ({e})")
         
         return ip, ptr, server, server_name
 
@@ -290,7 +290,7 @@ class Domain():
 
         except Exception as e:
             if self.__is_debug:
-                print(f"Error: Failed to get record for {name} ({e})")
+                print(f"NOTICE: Failed to get record for {name} ({e})")
 
         return mxs, mx_ip, mx_ptr, mx_server, mx_server_name
     
@@ -310,7 +310,7 @@ class Domain():
             
         except Exception as e:
             if self.__is_debug:
-                print(f"Error: Failed to get record for {name} ({e})")
+                print(f"NOTICE: Failed to get record for {name} ({e})")
         
         return txts, spfs
     
@@ -356,7 +356,7 @@ class Domain():
                         
         except Exception as e:
             if self.__is_debug:
-                print(f"Error: Failed to get record for {name} ({e})")
+                print(f"NOTICE: Failed to get record for {name} ({e})")
 
         return hinfos, a_server, a_server_name, mx_server, mx_server_name
 
@@ -371,7 +371,7 @@ class Domain():
             
         except Exception as e:
             if self.__is_debug:
-                print(f"Error: Failed to get record for {name} ({e})")
+                print(f"NOTICE: Failed to get record for {name} ({e})")
         
         return dmarc, dmarc_p, dmarc_rua
     
@@ -399,7 +399,7 @@ class Domain():
             try:
                 if not url: return False
 
-                response = requests.head(url, timeout=5)
+                response = requests.head(url, allow_redirects=True, timeout=5)
                 if response.status_code == 200: return True
 
                 return False
