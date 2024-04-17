@@ -11,22 +11,22 @@ class Domain():
     wwwName:str = ''
     
     # ネームサーバ
-    ns:list[str] = []
     ns_name:str
+    ns:list[str] = []
     
     # Aレコード
+    a_server_name:str = ''
     a_ip:str = ''
     a_ptr:str = ''
     a_server:str = ''
-    a_server_name:str = ''
     a_is_accessible_http: bool = False
     a_is_accessible_https: bool = False
     
     # www.Aレコード
+    www_a_server_name:str = ''
     www_a_ip:str = ''
     www_a_ptr:str = ''
     www_a_server:str = ''
-    www_a_server_name:str = ''
     www_a_is_accessible_http: bool = False
     www_a_is_accessible_https: bool = False
     
@@ -34,18 +34,18 @@ class Domain():
     is_accessible_http: bool = False
 
     # MXレコード
+    mx_server_name:str = ''
     mx:list[str] = []
     mx_ip:str = ''
     mx_ptr:str = ''
     mx_server:str = ''
-    mx_server_name:str = ''
-    
-    # TXTレコード
-    txt:list[str] = []
-    spf:list[str] = []
     
     # HINFOレコード
     hinfo:list[str] = []
+
+    # TXTレコード
+    txt:list[str] = []
+    spf:list[str] = []
 
     # DMARCレコード
     dmarc:str = ''
@@ -62,14 +62,14 @@ class Domain():
         if name:
             # NSレコード
             self.name, self.wwwName = self.__setName(name)
-            self.ns, self.ns_name = self.__getNs(name=self.name)
+            self.ns_name, self.ns = self.__getNs(name=self.name)
             
             # Aレコード
             (
+                self.a_server_name,
                 self.a_ip,
                 self.a_ptr,
                 self.a_server,
-                self.a_server_name
             ) = self.__getA(name=self.name)
             (
                 self.a_is_accessible_http,
@@ -78,10 +78,10 @@ class Domain():
 
             # www.Aレコード
             (
+                self.www_a_server_name,
                 self.www_a_ip, 
                 self.www_a_ptr, 
                 self.www_a_server, 
-                self.www_a_server_name
             ) = self.__getA(name=self.wwwName)
             (
                 self.www_a_is_accessible_http,
@@ -98,19 +98,13 @@ class Domain():
 
             # MXレコード
             (
+                self.mx_server_name,
                 self.mx,
                 self.mx_ip,
                 self.mx_ptr,
                 self.mx_server,
-                self.mx_server_name
             ) = self.__getMx(name=self.name)
 
-            # TXTレコード
-            (
-                self.txt,
-                self.spf,
-            ) = self.__getTxt(name=self.name)
-            
             # HINFOレコード
             (
                 self.hinfo,
@@ -119,6 +113,12 @@ class Domain():
                 self.mx_server,
                 self.mx_server_name
             ) = self.__getHinfo(name=self.name)
+
+            # TXTレコード
+            (
+                self.txt,
+                self.spf,
+            ) = self.__getTxt(name=self.name)
 
             # DMARCレコード
             (
@@ -173,7 +173,7 @@ class Domain():
             self.__servers_info = json.load(file)
 
 
-    def __getNs(self, name:str) -> tuple[list[str], str]:
+    def __getNs(self, name:str) -> tuple[str, list[str]]:
         """
         ドメイン名からNSレコードを取得する
 
@@ -195,11 +195,11 @@ class Domain():
                     nsServerName = name
                     break
 
-            return ns, nsServerName
+            return nsServerName, ns
         except Exception as e:
             if self.__is_debug:
                 print(f"NOTICE: Failed to get NS record for {name} ({e})")
-            return [], ""
+            return "", []
         
 
     def __setName(self, name:str) -> Tuple[str, str]:
@@ -257,7 +257,7 @@ class Domain():
             if self.__is_debug:
                 print(f"NOTICE: Failed to get record for {name} ({e})")
         
-        return ip, ptr, server, server_name
+        return server_name, ip, ptr, server
 
         
     def __getMx(self, name:str) -> tuple[list[str], str, str, str, str]:
@@ -303,7 +303,7 @@ class Domain():
             if self.__is_debug:
                 print(f"NOTICE: Failed to get record for {name} ({e})")
 
-        return mxs, mx_ip, mx_ptr, mx_server, mx_server_name
+        return mx_server_name, mxs, mx_ip, mx_ptr, mx_server
     
     
     def __getTxt(self, name:str) -> tuple[list[str], list[str]]:
