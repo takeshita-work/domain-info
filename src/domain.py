@@ -19,17 +19,20 @@ class Domain():
     a_ptr:str = ''
     a_server:str = ''
     a_server_name:str = ''
-    is_accessible_http: bool = False
-    is_accessible_https: bool = False
+    a_is_accessible_http: bool = False
+    a_is_accessible_https: bool = False
     
     # www.Aレコード
     www_a_ip:str = ''
     www_a_ptr:str = ''
     www_a_server:str = ''
     www_a_server_name:str = ''
-    www_is_accessible_http: bool = False
-    www_is_accessible_https: bool = False
+    www_a_is_accessible_http: bool = False
+    www_a_is_accessible_https: bool = False
     
+    # http アクセス（a or www で どれかがアクセスできれば True）
+    is_accessible_http: bool = False
+
     # MXレコード
     mx:list[str] = []
     mx_ip:str = ''
@@ -69,8 +72,8 @@ class Domain():
                 self.a_server_name
             ) = self.__getA(name=self.name)
             (
-                self.is_accessible_http,
-                self.is_accessible_https,
+                self.a_is_accessible_http,
+                self.a_is_accessible_https,
             ) = self.__isAccessibleHttp(name=self.name)
 
             # www.Aレコード
@@ -81,9 +84,17 @@ class Domain():
                 self.www_a_server_name
             ) = self.__getA(name=self.wwwName)
             (
-                self.www_is_accessible_http,
-                self.www_is_accessible_https,
+                self.www_a_is_accessible_http,
+                self.www_a_is_accessible_https,
             ) = self.__isAccessibleHttp(name=self.wwwName)
+
+            # is_accessible_http
+            self.is_accessible_http = (
+                self.a_is_accessible_http or
+                self.a_is_accessible_https or
+                self.www_a_is_accessible_http or
+                self.www_a_is_accessible_https
+            )
 
             # MXレコード
             (
@@ -399,7 +410,7 @@ class Domain():
             try:
                 if not url: return False
 
-                response = requests.head(url, allow_redirects=True, timeout=5)
+                response = requests.head(url, allow_redirects=True, timeout=30)
                 if response.status_code == 200: return True
 
                 return False
