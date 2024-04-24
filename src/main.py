@@ -18,7 +18,7 @@ parser.add_argument('domain_names',
     nargs='+',
     help='Enter domain names. '
 )
-parser.add_argument('--value-only',
+parser.add_argument('-v', '--value-only',
     action='store_true',
     help='Return only values.'
 )

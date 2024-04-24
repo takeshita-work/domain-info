@@ -42,14 +42,16 @@ def test___setName(name, checkWwwName, checkName):
     ),
     ]
 )
-def test___getNs(name, ns_is_retrieved, ns_name_is_retrieved):
+def test___getNsInfo(name, ns_is_retrieved, ns_name_is_retrieved):
     domain = Domain(is_debug=True)
-    ns, ns_name = domain._Domain__getNs(name)
-    print(ns, ns_name)  
-    assert (len(ns) > 0) == ns_is_retrieved, \
-        'NS の取得結果が正しくありません'
+    ns_name, ns = domain._Domain__getNsInfo(name)
+    
+    print(ns_name, ns)  
     assert (ns_name != '') == ns_name_is_retrieved, \
         'ns name の取得結果が正しくありません'
+    assert (len(ns) > 0) == ns_is_retrieved, \
+        'NS の取得結果が正しくありません'
+    
 
 
 @pytest.mark.parametrize(
@@ -83,7 +85,7 @@ def test___getNs(name, ns_is_retrieved, ns_name_is_retrieved):
     )
     ]
 )
-def test___getA(
+def test___getAInfo(
     name,
     ip_is_retrieved,
     ptr_is_retrieved,
@@ -91,17 +93,17 @@ def test___getA(
     server_name_is_retrieved
 ):
     domain = Domain(is_debug=True)
-    ip, ptr, server, server_name = domain._Domain__getA(name)
+    server_name, ip, ptr, server  = domain._Domain__getAInfo(name)
     
-    print(ip, ptr, server, server_name)
+    print(server_name, ip, ptr, server)
+    assert (server_name != '') == server_name_is_retrieved, \
+        'server name の取得結果が正しくありません'
     assert (ip != '') == ip_is_retrieved, \
         'IP の取得結果が正しくありません'
     assert (ptr != '') == ptr_is_retrieved, \
         'PTR の取得結果が正しくありません'
     assert (server != '') == server_is_retrieved, \
         'server の取得結果が正しくありません'
-    assert (server_name != '') == server_name_is_retrieved, \
-        'server name の取得結果が正しくありません'
 
 
 @pytest.mark.parametrize(
@@ -139,7 +141,7 @@ def test___getA(
     )
     ]
 )
-def test___getMx(
+def test___getMxInfo(
     name,
     mxs_is_retrieved,
     ip_is_retrieved,
@@ -148,10 +150,12 @@ def test___getMx(
     server_name_is_retrieved
 ):
     domain = Domain(is_debug=True)
-    mxs, mx_ip, mx_ptr, mx_server, mx_server_name = domain._Domain__getMx(name)
+    mx_server_name, mxs, mx_ip, mx_ptr, mx_server = domain._Domain__getMxInfo(name)
     if mxs:
-        print(', '.join([mxs[0], mx_ip, mx_ptr, mx_server, mx_server_name]))
+        print(', '.join([mx_server_name, mxs[0], mx_ip, mx_ptr, mx_server]))
 
+    assert (mx_server_name != '') == server_name_is_retrieved, \
+        'server name の取得結果が正しくありません'
     assert (len(mxs) > 0) == mxs_is_retrieved, \
         'MXレコードが正しく取得できていない'
     assert (mx_ip != '') == ip_is_retrieved, \
@@ -160,47 +164,96 @@ def test___getMx(
         'PTR の取得結果が正しくありません'
     assert (mx_server != '') == server_is_retrieved, \
         'server の取得結果が正しくありません'
-    assert (mx_server_name != '') == server_name_is_retrieved, \
-        'server name の取得結果が正しくありません'
 
 
 @pytest.mark.parametrize(
     ','.join([
         'name',
         'txt_is_retrieved',
-        'spf_is_retrieved',
     ]),[
     (
         'example.com', # 対象のドメイン
         True,  # TXT が取得できたかどうか
-        True,  # SPF が取得できたかどうか
     ),
     (
         'example.jp', # 対象のドメイン
         False, # TXT が取得できたかどうか
-        False, # SPF が取得できたかどうか
     ),
     (
         'google.com', # 対象のドメイン
         True,  # TXT が取得できたかどうか
-        True,  # SPF が取得できたかどうか
     )
     ]
 )
 def test___getTxt(
     name,
-    txt_is_retrieved,
+    txt_is_retrieved
+):
+    domain = Domain(is_debug=True)
+    txt = domain._Domain__getTxt(name)
+    print(', '.join(txt))
+    assert (len(txt) > 0) == txt_is_retrieved, \
+        'TXTレコードが正しく取得できていない'
+
+@pytest.mark.parametrize(
+    ','.join([
+        'name',
+        'spf_is_retrieved',
+    ]),[
+    (
+        'example.com', # 対象のドメイン
+        True,  # SPF が取得できたかどうか
+    ),
+    (
+        'example.jp', # 対象のドメイン
+        False, # SPF が取得できたかどうか
+    ),
+    (
+        'google.com', # 対象のドメイン
+        True,  # SPF が取得できたかどうか
+    )
+    ]
+)
+def test___getSpf(
+    name,
     spf_is_retrieved
 ):
     domain = Domain(is_debug=True)
-    txt, spf = domain._Domain__getTxt(name)
-    print(', '.join(txt))
+    txt = domain._Domain__getTxt(name)
+    spf = domain._Domain__getSpf(txt)
     print(', '.join(spf))
-    assert (len(txt) > 0) == txt_is_retrieved, \
-        'TXTレコードが正しく取得できていない'
     assert (len(spf) > 0) == spf_is_retrieved, \
         'SPFレコードが正しく取得できていない'
+    
+@pytest.mark.parametrize(
+    'name',[
+    ('google.com')
+    ]
+)
+def test___get_spf_mechanisms(name):
+    domain = Domain(is_debug=True)
+    spf_mechanisms, spf_ips = domain._Domain__get_spf_mechanisms(name)
+    
+    print(json.dumps(spf_mechanisms, indent=4, ensure_ascii=False))
+    print(json.dumps(spf_ips, indent=4, ensure_ascii=False))
+    # txt, spf = domain._Domain__getTxt(name)
+    # domain._Domain__check_spf(name, "")
+    
+    assert len(spf_mechanisms) > 0, "mechanisms が取得できていない"
+    assert len(spf_ips) > 0, "spf_ips が取得できていない"
 
+@pytest.mark.parametrize(
+    'name',[
+    ('google.com'),
+    ]
+)
+def test___check_spf(name):
+    domain = Domain(is_debug=True)
+    a_ip = domain._Domain__getA(name=domain._Domain__getMx(name=name)[0])
+    print(a_ip)
+    result = domain._Domain__check_spf(name, a_ip)
+    
+    assert result, "sfpレコードのチェックに失敗"
 
 @pytest.mark.parametrize(
     ','.join([
